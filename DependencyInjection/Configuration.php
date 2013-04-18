@@ -1,23 +1,30 @@
 <?php
 
-namespace FOQ\ElasticaBundle\DependencyInjection;
+namespace FOS\ElasticaBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 
-class Configuration
+class Configuration implements ConfigurationInterface
 {
     private $supportedDrivers = array('orm', 'mongodb', 'propel');
+
+    private $configArray = array();
+
+    public function __construct($configArray){
+        $this->configArray = $configArray;
+    }
 
     /**
      * Generates the configuration tree.
      *
-     * @return \Symfony\Component\DependencyInjection\Configuration\NodeInterface
+     * @return \Symfony\Component\Config\Definition\NodeInterface
      */
-    public function getConfigTree()
+    public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('foq_elastica', 'array');
+        $rootNode = $treeBuilder->root('fos_elastica', 'array');
 
         $this->addClientsSection($rootNode);
         $this->addIndexesSection($rootNode);
@@ -30,7 +37,17 @@ class Configuration
             ->end()
         ;
 
-        return $treeBuilder->buildTree();
+        return $treeBuilder;
+    }
+
+    /**
+     * Generates the configuration tree.
+     *
+     * @return \Symfony\Component\DependencyInjection\Configuration\NodeInterface
+     */
+    public function getConfigTree()
+    {
+        return $this->getConfigTreeBuilder()->buildTree();
     }
 
     /**
@@ -263,95 +280,140 @@ class Configuration
         $builder = new TreeBuilder();
         $node = $builder->root('mappings');
 
-        $node
+        $nestings = $this->getNestings();
+
+        $childrenNode = $node
             ->useAttributeAsKey('name')
             ->prototype('array')
                 ->treatNullLike(array())
                 ->addDefaultsIfNotSet()
+                ->children();
+
+        $this->addFieldConfig($childrenNode, $nestings);
+
+        return $node;
+    }
+
+    /**
+     * @param \Symfony\Component\Config\Definition\Builder\NodeBuilder $node The node to which to attach the field config to
+     * @param array $nestings the nested mappings for the current field level
+     */
+    protected function addFieldConfig($node, $nestings)
+    {
+        $node
+            ->scalarNode('type')->defaultValue('string')->end()
+            ->scalarNode('boost')->end()
+            ->scalarNode('store')->end()
+            ->scalarNode('index')->end()
+            ->scalarNode('index_analyzer')->end()
+            ->scalarNode('search_analyzer')->end()
+            ->scalarNode('analyzer')->end()
+            ->scalarNode('term_vector')->end()
+            ->scalarNode('null_value')->end()
+            ->booleanNode('include_in_all')->defaultValue(true)->end()
+            ->scalarNode('lat_lon')->end()
+            ->scalarNode('index_name')->end()
+            ->booleanNode('omit_norms')->end()
+            ->scalarNode('index_options')->end()
+            ->scalarNode('ignore_above')->end()
+            ->scalarNode('position_offset_gap')->end()
+            ->arrayNode('_parent')
+                ->treatNullLike(array())
                 ->children()
-                    ->scalarNode('type')->defaultValue('string')->end()
-                    ->scalarNode('boost')->end()
-                    ->scalarNode('store')->end()
-                    ->scalarNode('index')->end()
-                    ->scalarNode('index_analyzer')->end()
-                    ->scalarNode('search_analyzer')->end()
-                    ->scalarNode('analyzer')->end()
-                    ->scalarNode('term_vector')->end()
-                    ->scalarNode('null_value')->end()
-                    ->booleanNode('include_in_all')->defaultValue('true')->end()
-                    ->scalarNode('lat_lon')->end()
-                    ->arrayNode('fields')
-                        ->useAttributeAsKey('name')
-                        ->prototype('array')
-                            ->treatNullLike(array())
-                            ->addDefaultsIfNotSet()
-                            ->children()
-                                ->scalarNode('type')->defaultValue('string')->end()
-                                ->scalarNode('boost')->end()
-                                ->scalarNode('store')->end()
-                                ->scalarNode('index')->end()
-                                ->scalarNode('index_analyzer')->end()
-                                ->scalarNode('search_analyzer')->end()
-                                ->scalarNode('analyzer')->end()
-                                ->scalarNode('term_vector')->end()
-                                ->scalarNode('null_value')->end()
-                                ->booleanNode('include_in_all')->defaultValue('true')->end()
-                                ->scalarNode('lat_lon')->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                    ->arrayNode('_parent')
-                        ->treatNullLike(array())
-                        ->children()
-                            ->scalarNode('type')->end()
-                            ->scalarNode('identifier')->defaultValue('id')->end()
-                        ->end()
-                    ->end()
-                    ->arrayNode('properties')
-                        ->useAttributeAsKey('name')
-                        ->prototype('array')
-                            ->treatNullLike(array())
-                            ->addDefaultsIfNotSet()
-                            ->children()
-                                ->scalarNode('type')->defaultValue('string')->end()
-                                ->scalarNode('boost')->end()
-                                ->scalarNode('store')->end()
-                                ->scalarNode('index')->end()
-                                ->scalarNode('index_analyzer')->end()
-                                ->scalarNode('search_analyzer')->end()
-                                ->scalarNode('analyzer')->end()
-                                ->scalarNode('term_vector')->end()
-                                ->scalarNode('null_value')->end()
-                                ->booleanNode('include_in_all')->defaultValue('true')->end()
-                                ->scalarNode('lat_lon')->end()
-                                ->arrayNode('fields')
-                                    ->useAttributeAsKey('name')
-                                    ->prototype('array')
-                                        ->treatNullLike(array())
-                                        ->addDefaultsIfNotSet()
-                                        ->children()
-                                            ->scalarNode('type')->defaultValue('string')->end()
-                                            ->scalarNode('boost')->end()
-                                            ->scalarNode('store')->end()
-                                            ->scalarNode('index')->end()
-                                            ->scalarNode('index_analyzer')->end()
-                                            ->scalarNode('search_analyzer')->end()
-                                            ->scalarNode('analyzer')->end()
-                                            ->scalarNode('term_vector')->end()
-                                            ->scalarNode('null_value')->end()
-                                            ->booleanNode('include_in_all')->defaultValue('true')->end()
-                                            ->scalarNode('lat_lon')->end()
-                                        ->end()
-                                    ->end()
-                                ->end()
-                            ->end()
-                        ->end()
+                    ->scalarNode('type')->end()
+                    ->scalarNode('identifier')->defaultValue('id')->end()
+                ->end()
+            ->end();
+
+        if (isset($nestings['fields'])) {
+            $this->addNestedFieldConfig($node, $nestings, 'fields');
+        }
+
+        if (isset($nestings['properties'])) {
+            $this->addNestedFieldConfig($node, $nestings, 'properties');
+        }
+    }
+
+    /**
+     * @param \Symfony\Component\Config\Definition\Builder\NodeBuilder $node The node to which to attach the nested config to
+     * @param array $nestings The nestings for the current field level
+     * @param string $property the name of the nested property ('fields' or 'properties')
+     */
+    protected function addNestedFieldConfig($node, $nestings, $property)
+    {
+        $childrenNode = $node
+            ->arrayNode($property)
+                ->useAttributeAsKey('name')
+                ->prototype('array')
+                    ->treatNullLike(array())
+                    ->addDefaultsIfNotSet()
+                    ->children();
+
+        $this->addFieldConfig($childrenNode, $nestings[$property]);
+
+        $childrenNode
                     ->end()
                 ->end()
             ->end()
         ;
+    }
 
-        return $node;
+    /**
+     * @return array The unique nested mappings for all types
+     */
+    protected function getNestings()
+    {
+        if (!isset($this->configArray[0]['indexes'])) {
+            return array();
+        }
+
+        $nestings = array();
+        foreach ($this->configArray[0]['indexes'] as $index) {
+            if (empty($index['types'])) {
+                continue;
+            }
+
+            foreach ($index['types'] as $type) {
+                $nestings = array_merge_recursive($nestings, $this->getNestingsForType($type['mappings'], $nestings));
+            }
+        }
+        return $nestings;
+    }
+
+    /**
+     * @param array $mappings The mappings for the current type
+     * @return array The nested mappings defined for this type
+     */
+    protected function getNestingsForType(array $mappings = null)
+    {
+        if ($mappings === null) {
+            return array();
+        }
+
+        $nestings = array();
+
+        foreach ($mappings as $field) {
+            if (isset($field['fields'])) {
+                $this->addPropertyNesting($field, $nestings, 'fields');
+            } else if (isset($field['properties'])) {
+                $this->addPropertyNesting($field, $nestings, 'properties');
+            }
+        }
+
+        return $nestings;
+    }
+
+    /**
+     * @param array $field      The field mapping definition
+     * @param array $nestings   The nestings array
+     * @param string $property  The nested property name ('fields' or 'properties')
+     */
+    protected function addPropertyNesting($field, &$nestings, $property)
+    {
+        if (!isset($nestings[$property])) {
+            $nestings[$property] = array();
+        }
+        $nestings[$property] = array_merge_recursive($nestings[$property], $this->getNestingsForType($field[$property]));
     }
 
     /**
@@ -398,7 +460,7 @@ class Configuration
 
         return $node;
     }
-    
+
     /**
      * Returns the array node used for "_routing".
      */

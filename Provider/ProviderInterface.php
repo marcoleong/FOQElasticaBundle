@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Provider;
+namespace FOS\ElasticaBundle\Provider;
 
 /**
  * Insert application domain objects into elastica types
@@ -12,7 +12,8 @@ interface ProviderInterface
     /**
      * Persists all domain objects to ElasticSearch for this provider.
      *
-     * @param Closure $loggerClosure
+     * @param \Closure $loggerClosure
+     * @return
      */
     function populate(\Closure $loggerClosure = null);
 }

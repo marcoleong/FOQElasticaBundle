@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Command;
+namespace FOS\ElasticaBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -8,6 +8,10 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\Output;
+use FOS\ElasticaBundle\IndexManager;
+use FOS\ElasticaBundle\Provider\ProviderRegistry;
+use FOS\ElasticaBundle\Resetter;
+use FOS\ElasticaBundle\Provider\ProviderInterface;
 
 /**
  * Populate the search index
@@ -15,17 +19,17 @@ use Symfony\Component\Console\Output\Output;
 class PopulateCommand extends ContainerAwareCommand
 {
     /**
-     * @var FOQ\ElasticaBundle\IndexManager
+     * @var IndexManager
      */
     private $indexManager;
 
     /**
-     * @var FOQ\ElasticaBundle\Provider\ProviderRegistry
+     * @var ProviderRegistry
      */
     private $providerRegistry;
 
     /**
-     * @var FOQ\ElasticaBundle\Resetter
+     * @var Resetter
      */
     private $resetter;
 
@@ -35,10 +39,10 @@ class PopulateCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('foq:elastica:populate')
+            ->setName('fos:elastica:populate')
             ->addOption('index', null, InputOption::VALUE_OPTIONAL, 'The index to repopulate')
             ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'The type to repopulate')
-            ->addOption('no-reset', null, InputOption::VALUE_NONE, 'If set, the indexes will not been resetted before populating.')
+            ->addOption('no-reset', null, InputOption::VALUE_NONE, 'Do not reset index before populating')
             ->setDescription('Populates search indexes from providers')
         ;
     }
@@ -48,9 +52,9 @@ class PopulateCommand extends ContainerAwareCommand
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->indexManager = $this->getContainer()->get('foq_elastica.index_manager');
-        $this->providerRegistry = $this->getContainer()->get('foq_elastica.provider_registry');
-        $this->resetter = $this->getContainer()->get('foq_elastica.resetter');
+        $this->indexManager = $this->getContainer()->get('fos_elastica.index_manager');
+        $this->providerRegistry = $this->getContainer()->get('fos_elastica.provider_registry');
+        $this->resetter = $this->getContainer()->get('fos_elastica.resetter');
     }
 
     /**
@@ -95,6 +99,7 @@ class PopulateCommand extends ContainerAwareCommand
             $this->resetter->resetIndex($index);
         }
 
+        /** @var $providers ProviderInterface[] */
         $providers = $this->providerRegistry->getIndexProviders($index);
 
         foreach ($providers as $type => $provider) {

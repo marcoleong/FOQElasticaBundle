@@ -1,15 +1,18 @@
 <?php
 
-namespace FOQ\ElasticaBundle;
+namespace FOS\ElasticaBundle;
 
 use Elastica_Client;
-use FOQ\ElasticaBundle\Logger\ElasticaLogger;
+use FOS\ElasticaBundle\Logger\ElasticaLogger;
 
 /**
  * @author Gordon Franke <info@nevalon.de>
  */
 class Client extends Elastica_Client
 {
+    /**
+     * @var ElasticaLogger
+     */
     protected $logger;
 
     public function setLogger(ElasticaLogger $logger)

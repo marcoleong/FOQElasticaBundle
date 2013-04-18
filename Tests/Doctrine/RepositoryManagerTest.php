@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\Doctrine;
+namespace FOS\ElasticaBundle\Tests\Doctrine;
 
-use FOQ\ElasticaBundle\Doctrine\RepositoryManager;
+use FOS\ElasticaBundle\Doctrine\RepositoryManager;
 
 class CustomRepository{}
 
@@ -22,66 +22,75 @@ class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testThatGetRepositoryReturnsDefaultRepository()
     {
-        $finderMock = $this->getMockBuilder('FOQ\ElasticaBundle\Finder\TransformedFinder')
+        /** @var $finderMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Finder\TransformedFinder */
+        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $registryMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Persistence\ManagerRegistry */
         $registryMock = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $readerMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Annotations\Reader */
         $readerMock = $this->getMockBuilder('Doctrine\Common\Annotations\Reader')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $entityName = 'FOQ\ElasticaBundle\Tests\Manager\Entity';
+        $entityName = 'FOS\ElasticaBundle\Tests\Manager\Entity';
 
         $manager = new RepositoryManager($registryMock, $readerMock);
         $manager->addEntity($entityName, $finderMock);
         $repository = $manager->getRepository($entityName);
-        $this->assertInstanceOf('FOQ\ElasticaBundle\Repository', $repository);
+        $this->assertInstanceOf('FOS\ElasticaBundle\Repository', $repository);
     }
 
     public function testThatGetRepositoryReturnsCustomRepository()
     {
-        $finderMock = $this->getMockBuilder('FOQ\ElasticaBundle\Finder\TransformedFinder')
+        /** @var $finderMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Finder\TransformedFinder */
+        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $registryMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Persistence\ManagerRegistry */
         $registryMock = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $readerMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Annotations\Reader */
         $readerMock = $this->getMockBuilder('Doctrine\Common\Annotations\Reader')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $entityName = 'FOQ\ElasticaBundle\Tests\Manager\Entity';
+        $entityName = 'FOS\ElasticaBundle\Tests\Manager\Entity';
 
         $manager = new RepositoryManager($registryMock, $readerMock);
-        $manager->addEntity($entityName, $finderMock, 'FOQ\ElasticaBundle\Tests\Manager\CustomRepository');
+        $manager->addEntity($entityName, $finderMock, 'FOS\ElasticaBundle\Tests\Manager\CustomRepository');
         $repository = $manager->getRepository($entityName);
-        $this->assertInstanceOf('FOQ\ElasticaBundle\Tests\Manager\CustomRepository', $repository);
+        $this->assertInstanceOf('FOS\ElasticaBundle\Tests\Manager\CustomRepository', $repository);
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testThatGetRepositoryThrowsExceptionIfEntityNotConfigured()
     {
-        $finderMock = $this->getMockBuilder('FOQ\ElasticaBundle\Finder\TransformedFinder')
+        /** @var $finderMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Finder\TransformedFinder */
+        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $registryMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Persistence\ManagerRegistry */
         $registryMock = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $readerMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Annotations\Reader */
         $readerMock = $this->getMockBuilder('Doctrine\Common\Annotations\Reader')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $entityName = 'FOQ\ElasticaBundle\Tests\Manager\Entity';
+        $entityName = 'FOS\ElasticaBundle\Tests\Manager\Entity';
 
         $manager = new RepositoryManager($registryMock, $readerMock);
         $manager->addEntity($entityName, $finderMock);
@@ -89,47 +98,53 @@ class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testThatGetRepositoryThrowsExceptionIfCustomRepositoryNotFound()
     {
-        $finderMock = $this->getMockBuilder('FOQ\ElasticaBundle\Finder\TransformedFinder')
+        /** @var $finderMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Finder\TransformedFinder */
+        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $registryMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Persistence\ManagerRegistry */
         $registryMock = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $readerMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Annotations\Reader */
         $readerMock = $this->getMockBuilder('Doctrine\Common\Annotations\Reader')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $entityName = 'FOQ\ElasticaBundle\Tests\Manager\Entity';
+        $entityName = 'FOS\ElasticaBundle\Tests\Manager\Entity';
 
         $manager = new RepositoryManager($registryMock, $readerMock);
-        $manager->addEntity($entityName, $finderMock, 'FOQ\ElasticaBundle\Tests\MissingRepository');
+        $manager->addEntity($entityName, $finderMock, 'FOS\ElasticaBundle\Tests\MissingRepository');
         $manager->getRepository('Missing Entity');
     }
 
     public function testThatGetRepositoryWorksWithShortEntityName()
     {
-        $finderMock = $this->getMockBuilder('FOQ\ElasticaBundle\Finder\TransformedFinder')
+        /** @var $finderMock \PHPUnit_Framework_MockObject_MockObject|\FOS\ElasticaBundle\Finder\TransformedFinder */
+        $finderMock = $this->getMockBuilder('FOS\ElasticaBundle\Finder\TransformedFinder')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $registryMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Persistence\ManagerRegistry */
         $registryMock = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var $readerMock \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Annotations\Reader */
         $readerMock = $this->getMockBuilder('Doctrine\Common\Annotations\Reader')
             ->disableOriginalConstructor()
             ->getMock();
 
         $shortEntityName = 'TestBundle:Entity';
-        $entityName = 'FOQ\ElasticaBundle\Tests\Manager\Entity';
+        $entityName = 'FOS\ElasticaBundle\Tests\Manager\Entity';
         $shortPath = 'TestBundle';
-        $fullPath = 'FOQ\ElasticaBundle\Tests\Manager';
+        $fullPath = 'FOS\ElasticaBundle\Tests\Manager';
 
         $registryMock->expects($this->once())
             ->method('getAliasNamespace')
@@ -139,7 +154,7 @@ class RepositoryManagerTest extends \PHPUnit_Framework_TestCase
         $manager = new RepositoryManager($registryMock, $readerMock);
         $manager->addEntity($entityName, $finderMock);
         $repository = $manager->getRepository($shortEntityName);
-        $this->assertInstanceOf('FOQ\ElasticaBundle\Repository', $repository);
+        $this->assertInstanceOf('FOS\ElasticaBundle\Repository', $repository);
     }
 
 }

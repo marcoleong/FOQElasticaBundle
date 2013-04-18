@@ -1,9 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Doctrine\ORM;
+namespace FOS\ElasticaBundle\Doctrine\ORM;
 
-use FOQ\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer;
-use Elastica_Document;
+use FOS\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer;
 use Doctrine\ORM\Query;
 
 /**

@@ -1,9 +1,10 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Paginator;
+namespace FOS\ElasticaBundle\Paginator;
 
-use FOQ\ElasticaBundle\Paginator\PartialResultsInterface;
+use FOS\ElasticaBundle\Paginator\PartialResultsInterface;
 use Elastica_ResultSet;
+use Elastica_Result;
 
 /**
  * Raw partial results transforms to a simple array
@@ -25,7 +26,7 @@ class RawPartialResults implements PartialResultsInterface
      */
     public function toArray()
     {
-        return array_map(function($result) {
+        return array_map(function(Elastica_Result $result) {
             return $result->getSource();
         }, $this->resultSet->getResults());
     }

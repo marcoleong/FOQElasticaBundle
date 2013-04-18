@@ -1,9 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Doctrine\MongoDB;
+namespace FOS\ElasticaBundle\Doctrine\MongoDB;
 
-use FOQ\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer;
-use Elastica_Document;
+use FOS\ElasticaBundle\Doctrine\AbstractElasticaToModelTransformer;
 
 /**
  * Maps Elastica documents with Doctrine objects

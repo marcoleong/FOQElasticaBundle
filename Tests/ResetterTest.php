@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\Resetter;
+namespace FOS\ElasticaBundle\Tests\Resetter;
 
-use FOQ\ElasticaBundle\Resetter;
+use FOS\ElasticaBundle\Resetter;
 
 class ResetterTest extends \PHPUnit_Framework_TestCase
 {
@@ -71,7 +71,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testResetIndexShouldThrowExceptionForInvalidIndex()
     {
@@ -101,7 +101,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testResetIndexTypeShouldThrowExceptionForInvalidIndex()
     {
@@ -110,7 +110,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testResetIndexTypeShouldThrowExceptionForInvalidType()
     {
@@ -141,7 +141,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return Elastica_Index
+     * @return \Elastica_Index
      */
     private function getMockElasticaIndex()
     {
@@ -151,7 +151,7 @@ class ResetterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return Elastica_Type
+     * @return \Elastica_Type
      */
     private function getMockElasticaType()
     {

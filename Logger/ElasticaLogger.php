@@ -1,6 +1,6 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Logger;
+namespace FOS\ElasticaBundle\Logger;
 
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
@@ -21,7 +21,8 @@ class ElasticaLogger
     /**
      * Constructor.
      *
-     * @param LoggerInterface $logger The Symfony logger
+     * @param LoggerInterface|null $logger The Symfony logger
+     * @param bool $debug
      */
     public function __construct(LoggerInterface $logger = null, $debug = false)
     {

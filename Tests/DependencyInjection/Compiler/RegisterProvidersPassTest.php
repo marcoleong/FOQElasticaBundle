@@ -1,8 +1,8 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\DependencyInjection\Compiler;
+namespace FOS\ElasticaBundle\Tests\DependencyInjection\Compiler;
 
-use FOQ\ElasticaBundle\DependencyInjection\Compiler\RegisterProvidersPass;
+use FOS\ElasticaBundle\DependencyInjection\Compiler\RegisterProvidersPass;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -15,8 +15,8 @@ class RegisterProvidersPassTest extends \PHPUnit_Framework_TestCase
 
         $registryDefinition = new Definition();
 
-        $container->setDefinition('foq_elastica.provider_registry', $registryDefinition);
-        $container->setAlias('foq_elastica.index', 'foq_elastica.index.foo');
+        $container->setDefinition('fos_elastica.provider_registry', $registryDefinition);
+        $container->setAlias('fos_elastica.index', 'fos_elastica.index.foo');
 
         $container->setDefinition('provider.foo.a', $this->createProviderDefinition(array('type' => 'a')));
         $container->setDefinition('provider.foo.b', $this->createProviderDefinition(array('index' => 'foo', 'type' => 'b')));
@@ -32,15 +32,15 @@ class RegisterProvidersPassTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testProcessShouldRequireProviderImplementation()
     {
         $container = new ContainerBuilder();
         $pass = new RegisterProvidersPass();
 
-        $container->setDefinition('foq_elastica.provider_registry', new Definition());
-        $container->setAlias('foq_elastica.index', 'foq_elastica.index.foo');
+        $container->setDefinition('fos_elastica.provider_registry', new Definition());
+        $container->setAlias('fos_elastica.index', 'fos_elastica.index.foo');
 
         $providerDef = $this->createProviderDefinition();
         $providerDef->setClass('stdClass');
@@ -51,15 +51,15 @@ class RegisterProvidersPassTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testProcessShouldRequireTypeAttribute()
     {
         $container = new ContainerBuilder();
         $pass = new RegisterProvidersPass();
 
-        $container->setDefinition('foq_elastica.provider_registry', new Definition());
-        $container->setAlias('foq_elastica.index', 'foq_elastica.index.foo');
+        $container->setDefinition('fos_elastica.provider_registry', new Definition());
+        $container->setAlias('fos_elastica.index', 'fos_elastica.index.foo');
 
         $container->setDefinition('provider.foo.a', $this->createProviderDefinition());
 
@@ -68,10 +68,10 @@ class RegisterProvidersPassTest extends \PHPUnit_Framework_TestCase
 
     private function createProviderDefinition(array $attributes = array())
     {
-        $provider = $this->getMock('FOQ\ElasticaBundle\Provider\ProviderInterface');
+        $provider = $this->getMock('FOS\ElasticaBundle\Provider\ProviderInterface');
 
         $definition = new Definition(get_class($provider));
-        $definition->addTag('foq_elastica.provider', $attributes);
+        $definition->addTag('fos_elastica.provider', $attributes);
 
         return $definition;
     }

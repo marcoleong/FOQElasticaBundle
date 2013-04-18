@@ -10,13 +10,17 @@
             <b>Queries</b>
             <span>{{ collector.querycount }}</span>
         </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Query Time</b>
+            <span>{{ '%0.2f'|format(collector.time * 1000) }} ms</span>
+        </div>
     {% endset %}
     {% include 'WebProfilerBundle:Profiler:toolbar_item.html.twig' with { 'link': profiler_url } %}
 {% endblock %}
 
 {% block menu %}
 <span class="label">
-    <span class="icon"><img src="{{ asset('bundles/foqelastica/images/elastica.png') }}" alt="" /></span>
+    <span class="icon"><img src="{{ asset('bundles/foselastica/images/elastica.png') }}" alt="" /></span>
     <strong>Elastica</strong>
     <span class="count">
         <span>{{ collector.querycount }}</span>
@@ -42,7 +46,7 @@
                     <strong>Path</strong>: {{ query.path }}<br />
                     <strong>Method</strong>: {{ query.method }}
                     <div>
-                        <code>{{ query.data|yaml_encode }}</code>
+                        <code>{{ query.data|json_encode }}</code>
                     </div>
                     <small>
                         <strong>Time</strong>: {{ '%0.2f'|format(query.executionMS * 1000) }} ms

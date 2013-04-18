@@ -1,12 +1,15 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\Provider;
+namespace FOS\ElasticaBundle\Tests\Provider;
 
-use FOQ\ElasticaBundle\Provider\ProviderRegistry;
+use FOS\ElasticaBundle\Provider\ProviderRegistry;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ProviderRegistryTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject|ContainerInterface
+     */
     private $container;
     private $registry;
 
