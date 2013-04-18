@@ -1,10 +1,9 @@
 <?php
 
-namespace FOQ\ElasticaBundle\DependencyInjection\Compiler;
+namespace FOS\ElasticaBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
 use InvalidArgumentException;
 
@@ -20,13 +19,13 @@ class TransformerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('foq_elastica.elastica_to_model_transformer.collection.prototype')) {
+        if (!$container->hasDefinition('fos_elastica.elastica_to_model_transformer.collection.prototype')) {
             return;
         }
 
         $transformers = array();
 
-        foreach ($container->findTaggedServiceIds('foq_elastica.elastica_to_model_transformer') as $id => $tags) {
+        foreach ($container->findTaggedServiceIds('fos_elastica.elastica_to_model_transformer') as $id => $tags) {
             foreach ($tags as $tag) {
                 if (empty($tag['index']) || empty($tag['type'])) {
                     throw new InvalidArgumentException('The Transformer must have both a type and an index defined.');
@@ -37,11 +36,11 @@ class TransformerPass implements CompilerPassInterface
         }
 
         foreach ($transformers as $index => $indexTransformers) {
-            if (!$container->hasDefinition(sprintf('foq_elastica.elastica_to_model_transformer.collection.%s', $index))) {
+            if (!$container->hasDefinition(sprintf('fos_elastica.elastica_to_model_transformer.collection.%s', $index))) {
                 continue;
             }
 
-            $index = $container->getDefinition(sprintf('foq_elastica.elastica_to_model_transformer.collection.%s', $index));
+            $index = $container->getDefinition(sprintf('fos_elastica.elastica_to_model_transformer.collection.%s', $index));
             $index->replaceArgument(0, $indexTransformers);
         }
     }

@@ -1,11 +1,10 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Propel;
+namespace FOS\ElasticaBundle\Propel;
 
-use FOQ\ElasticaBundle\HybridResult;
-use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
-use Elastica_Document;
-use Symfony\Component\Form\Util\PropertyPath;
+use FOS\ElasticaBundle\HybridResult;
+use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
  * Maps Elastica documents with Propel objects
@@ -34,6 +33,13 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
     );
 
     /**
+     * PropertyAccessor instance
+     *
+     * @var PropertyAccessorInterface
+     */
+    protected $propertyAccessor;
+
+    /**
      * Instantiates a new Mapper
      *
      * @param string $objectClass
@@ -46,31 +52,41 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
     }
 
     /**
+     * Set the PropertyAccessor
+     *
+     * @param PropertyAccessorInterface $propertyAccessor
+     */
+    public function setPropertyAccessor(PropertyAccessorInterface $propertyAccessor)
+    {
+        $this->propertyAccessor = $propertyAccessor;
+    }
+
+    /**
      * Transforms an array of elastica objects into an array of
      * model objects fetched from the propel repository
      *
-     * @param array of elastica objects
+     * @param \Elastica_Document[] $elasticaObjects array of elastica objects
      * @return array
      */
     public function transform(array $elasticaObjects)
     {
-        $ids = array_map(function($elasticaObject) {
+        $ids = array_map(function(\Elastica_Document $elasticaObject) {
             return $elasticaObject->getId();
         }, $elasticaObjects);
 
         $objects = $this->findByIdentifiers($ids, $this->options['hydrate']);
 
-        $identifierProperty =  new PropertyPath($this->options['identifier']);
-
         // sort objects in the order of ids
         $idPos = array_flip($ids);
+        $identifier = $this->options['identifier'];
+        $propertyAccessor = $this->propertyAccessor;
         if (is_object($objects)) {
-            $objects->uasort(function($a, $b) use ($idPos, $identifierProperty) {
-                return $idPos[$identifierProperty->getValue($a)] > $idPos[$identifierProperty->getValue($b)];
+            $objects->uasort(function($a, $b) use ($idPos, $identifier, $propertyAccessor) {
+                return $idPos[$propertyAccessor->getValue($a, $identifier)] > $idPos[$propertyAccessor->getValue($b, $identifier)];
             });
         } else {
-            usort($objects, function($a, $b) use ($idPos, $identifierProperty) {
-                return $idPos[$identifierProperty->getValue($a)] > $idPos[$identifierProperty->getValue($b)];
+            usort($objects, function($a, $b) use ($idPos, $identifier, $propertyAccessor) {
+                return $idPos[$propertyAccessor->getValue($a, $identifier)] > $idPos[$propertyAccessor->getValue($b, $identifier)];
             });
         }
 
@@ -111,10 +127,8 @@ class ElasticaToModelTransformer implements ElasticaToModelTransformerInterface
     /**
      * Fetch objects for theses identifier values
      *
-     * @param string $class the model class
-     * @param string $identifierField like 'id'
      * @param array $identifierValues ids values
-     * @param Boolean $hydrate whether or not to hydrate the objects, false returns arrays
+     * @param boolean $hydrate whether or not to hydrate the objects, false returns arrays
      * @return array of objects or arrays
      */
     protected function findByIdentifiers(array $identifierValues, $hydrate)

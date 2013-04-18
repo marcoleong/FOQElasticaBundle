@@ -1,9 +1,9 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Paginator;
+namespace FOS\ElasticaBundle\Paginator;
 
-use FOQ\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
-use FOQ\ElasticaBundle\Paginator\TransformedPartialResults;
+use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
+use FOS\ElasticaBundle\Paginator\TransformedPartialResults;
 use Elastica_Searchable;
 use Elastica_Query;
 
@@ -15,9 +15,9 @@ class TransformedPaginatorAdapter extends RawPaginatorAdapter
     private $transformer;
 
     /**
-     * @param Elastica_SearchableInterface the object to search in
-     * @param Elastica_Query the query to search
-     * @param ElasticaToModelTransformerInterface the transformer for fetching the results
+     * @param Elastica_Searchable $searchable the object to search in
+     * @param Elastica_Query $query the query to search
+     * @param ElasticaToModelTransformerInterface $transformer the transformer for fetching the results
      */
     public function __construct(Elastica_Searchable $searchable, Elastica_Query $query, ElasticaToModelTransformerInterface $transformer)
     {

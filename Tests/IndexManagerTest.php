@@ -1,13 +1,14 @@
 <?php
 
-namespace FOQ\ElasticaBundle\Tests\IndexManager;
+namespace FOS\ElasticaBundle\Tests\IndexManager;
 
-use FOQ\ElasticaBundle\IndexManager;
+use FOS\ElasticaBundle\IndexManager;
 
 class IndexManagerTest extends \PHPUnit_Framework_TestCase
 {
     private $defaultIndexName;
     private $indexesByName;
+    /** @var IndexManager */
     private $indexManager;
 
     public function setUp()
@@ -18,6 +19,7 @@ class IndexManagerTest extends \PHPUnit_Framework_TestCase
             'index2' => 'test2',
         );
 
+        /** @var $defaultIndex \PHPUnit_Framework_MockObject_MockObject|\Elastica_Index */
         $defaultIndex = $this->getMockBuilder('Elastica_Index')
             ->disableOriginalConstructor()
             ->getMock();
@@ -41,7 +43,7 @@ class IndexManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testGetIndexShouldThrowExceptionForInvalidName()
     {
